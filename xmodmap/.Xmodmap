@@ -1,1 +1,3 @@
-keycode 135 = Control_L
+! Remap Menu to Right Control
+keycode 105 = Menu
+keycode 135 = Control_R

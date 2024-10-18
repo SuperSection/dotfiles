@@ -78,16 +78,24 @@ zstyle ':completion:*' menu no
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
-# Aliases
+# ls commands
 alias ls='ls --color'
 alias la='ls -a'
 alias ll='ls -al'
+alias lu='ls -alu' # shows last Access time
+alias lc='ls -alc' # shows last Change time
+
+# general commands
 alias vim='nvim'
 alias cls='clear'
 alias x='exit'
+
+# git commands
 alias ginit='git init'
 alias gadd='git add .'
 alias gcommit='git commit -m'
+
+# tmux commands
 alias tnew='tmux new -s'
 alias tat='tmux attach -t'
 alias td='tmux detach'
