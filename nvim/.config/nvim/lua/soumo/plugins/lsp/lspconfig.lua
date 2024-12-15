@@ -16,6 +16,25 @@ return {
     -- import cmp-nvim-lsp plugin
     local cmp_nvim_lsp = require("cmp_nvim_lsp")
 
+    -- Learning LSP
+    local client_mylsp = vim.lsp.start_client({
+      name = "learninglsp",
+      cmd = { "/home/soumo/go/src/learninglsp/main" },
+      on_attach = require("soumo.plugins").on_attach,
+    })
+
+    if not client_mylsp then
+      vim.notify("Hey you didn't do the client thing good")
+      return
+    end
+
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = "markdown",
+      callback = function()
+        vim.lsp.buf_attach_client(0, client_mylsp)
+      end,
+    })
+
     local keymap = vim.keymap -- for conciseness
 
     vim.api.nvim_create_autocmd("LspAttach", {
@@ -83,6 +102,7 @@ return {
       function(server_name)
         lspconfig[server_name].setup({
           capabilities = capabilities,
+          inlay_hints = { enable = true },
         })
       end,
       ["svelte"] = function()
@@ -100,6 +120,89 @@ return {
           end,
         })
       end,
+      ["ts_ls"] = function()
+        -- configure typescript server
+        lspconfig["ts_ls"].setup({
+          single_file_support = false,
+          capabilities = capabilities,
+          on_attach = function(client, bufnr)
+            -- Disable tsserver's formatting capabilities to use Prettier or ESLint instead
+            client.server_capabilities.documentFormattingProvider = false
+          end,
+          cmd = { "npx", "typescript-language-server", "--stdio" },
+          settings = {
+            workingDirectory = { mode = "auto" },
+            typescript = {
+              inlayHints = {
+                includeInlayParameterNameHints = "literal",
+                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                includeInlayFunctionParameterTypeHints = true,
+                includeInlayVariableTypeHints = false,
+                includeInlayPropertyDeclarationTypeHints = true,
+                includeInlayFunctionLikeReturnTypeHints = true,
+                includeInlayEnumMemberValueHints = true,
+              },
+            },
+            javascript = {
+              inlayHints = {
+                includeInlayParameterNameHints = "all",
+                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                includeInlayFunctionParameterTypeHints = true,
+                includeInlayVariableTypeHints = true,
+                includeInlayPropertyDeclarationTypeHints = true,
+                includeInlayFunctionLikeReturnTypeHints = true,
+                includeInlayEnumMemberValueHints = true,
+              },
+            },
+          },
+        })
+      end,
+      ["eslint"] = function()
+        -- configure eslint language server
+        lspconfig["eslint"].setup({
+          settings = {
+            codeAction = {
+              disableRuleComment = {
+                enable = true,
+                location = "separateLine",
+              },
+              showDocumentation = {
+                enable = true,
+              },
+            },
+          },
+          on_attach = function(client, bufnr)
+            -- Enable document formatting (autofix on save)
+            if client.server_capabilities.documentFormattingProvider then
+              vim.api.nvim_command([[augroup Format]])
+              vim.api.nvim_command([[autocmd! * <buffer>]])
+              vim.api.nvim_command([[autocmd BufWritePre <buffer> EslintFixAll]]) -- Auto-fix on save
+              vim.api.nvim_command([[augroup END]])
+            end
+
+            -- Disable ESLint for non-JavaScript/TypeScript files
+            if vim.bo[bufnr].filetype ~= "javascript" and vim.bo[bufnr].filetype ~= "typescript" then
+              client.stop()
+            end
+
+            -- Keymap for code actions
+            vim.api.nvim_buf_set_keymap(
+              bufnr,
+              "n",
+              "<leader>ca",
+              "<cmd>lua vim.lsp.buf.code_action()<CR>",
+              { desc = "ESLint code actions" }
+            )
+            vim.api.nvim_buf_set_keymap(
+              bufnr,
+              "n",
+              "<leader>cf",
+              "<cmd>lua vim.lsp.buf.format()<CR>",
+              { desc = "Format with ESLint" }
+            )
+          end,
+        })
+      end,
       ["tailwindcss"] = function()
         -- configure emmet language server
         lspconfig["tailwindcss"].setup({
@@ -109,6 +212,29 @@ return {
               elixir = "html-eex",
               eelixir = "html-eex",
               heex = "html-eex",
+            },
+          },
+          on_attach = function(client, bufnr)
+            -- Customize behavior or keybindings for Tailwind LSP here
+          end,
+          filetypes = {
+            "html",
+            "css",
+            "javascript",
+            "javascriptreact",
+            "typescript",
+            "typescriptreact",
+            "vue",
+            "svelte",
+          },
+          settings = {
+            tailwindCSS = {
+              experimental = {
+                classRegex = {
+                  -- For frameworks like twin.macro or similar custom class names
+                  { "tw`([^`]*)", "tw\\([^)]*\\)" },
+                },
+              },
             },
           },
         })
@@ -130,15 +256,66 @@ return {
       ["lua_ls"] = function()
         -- configure lua server (with special settings)
         lspconfig["lua_ls"].setup({
+          single_file_support = true,
           capabilities = capabilities,
           settings = {
             Lua = {
+              workspace = {
+                checkThirdParty = false,
+              },
+              misc = {
+                parameters = {
+                  -- "--log-level=trace",
+                },
+              },
+              hint = {
+                enable = true,
+                setType = false,
+                paramType = true,
+                paramName = "Disable",
+                semicolon = "Disable",
+                arrayIndex = "Disable",
+              },
+              doc = {
+                privateName = { "^_" },
+              },
+              type = {
+                castNumberToInteger = true,
+              },
               -- make the language server recognize "vim" global
               diagnostics = {
                 globals = { "vim" },
+                disable = { "incomplete-signature-doc", "trailing-space" },
+                groupSeverity = {
+                  strong = "Warning",
+                  strict = "Warning",
+                },
+                groupFileStatus = {
+                  ["ambiguity"] = "Opened",
+                  ["await"] = "Opened",
+                  ["codestyle"] = "None",
+                  ["duplicate"] = "Opened",
+                  ["global"] = "Opened",
+                  ["luadoc"] = "Opened",
+                  ["redefined"] = "Opened",
+                  ["strict"] = "Opened",
+                  ["strong"] = "Opened",
+                  ["type-check"] = "Opened",
+                  ["unbalanced"] = "Opened",
+                  ["unused"] = "Opened",
+                },
+                unusedLocalExclude = { "_*" },
               },
               completion = {
                 callSnippet = "Replace",
+              },
+              format = {
+                enable = false,
+                defaultConfig = {
+                  indent_style = "space",
+                  indent_size = "2",
+                  continuation_indent_size = "2",
+                },
               },
             },
           },
@@ -153,6 +330,27 @@ return {
             elixirLS = {
               dialyzerEnabled = false,
               fetchDeps = false,
+            },
+          },
+        })
+      end,
+      ["gopls"] = function()
+        -- configure Go LSP for Templ
+        lspconfig["gopls"].setup({
+          cmd = { "gopls" },
+          filetypes = { "go", "gotmpl" }, -- Templ is Go template files
+          root_dir = lspconfig.util.root_pattern("go.mod", ".git"),
+        })
+      end,
+      ["html"] = function()
+        -- configure HTML LSP for HTMX
+        lspconfig["html"].setup({
+          filetypes = { "html", "htmldjango", "templ" }, -- HTML and templates
+          settings = {
+            html = {
+              format = {
+                enable = true,
+              },
             },
           },
         })

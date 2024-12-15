@@ -5,6 +5,12 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=off
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+
 if [[ -f "/opt/homebrew/bin/brew" ]] then
   # If you're using macOS, you'll want this enabled
   eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -45,8 +51,6 @@ autoload -Uz compinit && compinit
 
 zinit cdreplay -q
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # Keybindings
 bindkey -e
@@ -94,6 +98,7 @@ alias x='exit'
 alias ginit='git init'
 alias gadd='git add .'
 alias gcommit='git commit -m'
+alias grao='git remote add origin'
 
 # tmux commands
 alias tnew='tmux new -s'
@@ -108,3 +113,7 @@ eval "$(zoxide init --cmd cd zsh)"
 export GOPATH="/home/soumo/go"
 export GOBIN="/home/soumo/go/bin"
 export ELIXIR_ERL_OPTIONS="+fnu"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

@@ -14,6 +14,7 @@ return {
       modules = {},
       highlight = {
         enable = true,
+        additional_vim_regex_highlighting = false,
       },
       -- enable indentation
       indent = { enable = true },
@@ -31,7 +32,9 @@ return {
         "yaml",
         "html",
         "css",
+        "scss",
         "go",
+        "templ",
         "java",
         "prisma",
         "markdown",
@@ -49,6 +52,9 @@ return {
         "elixir",
         "eex",
         "heex",
+        "sql",
+        "terraform",
+        "hcl",
       },
       sync_install = true,
       auto_install = true,
@@ -61,6 +67,11 @@ return {
           scope_incremental = false,
           node_decremental = "<bs>",
         },
+      },
+      query_linter = {
+        enable = true,
+        use_virtual_text = true,
+        lint_events = { "BufWrite", "CursorHold" },
       },
     })
   end,
