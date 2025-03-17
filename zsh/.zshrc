@@ -52,6 +52,11 @@ autoload -Uz compinit && compinit
 zinit cdreplay -q
 
 
+if ! pgrep -x "tmux" >/dev/null; then
+  tmux start-server
+fi
+
+
 # Keybindings
 bindkey -e
 bindkey '^p' history-search-backward
@@ -104,6 +109,8 @@ alias grao='git remote add origin'
 alias tnew='tmux new -s'
 alias tat='tmux attach -t'
 alias td='tmux detach'
+alias tls='tmux ls'
+alias tkill='tmux kill-session -t'
 
 # Shell integrations
 eval "$(fzf --zsh)"
