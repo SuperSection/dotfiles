@@ -28,6 +28,18 @@ fi
 # Source/Load zinit
 source "${ZINIT_HOME}/zinit.zsh"
 
+
+# Source aliases
+if [ -f ~/zsh/aliases.zsh ]; then
+  source ~/zsh/aliases.zsh
+fi
+
+# Source exports
+if [ -f ~/zsh/exports.zsh ]; then
+  source ~/zsh/exports.zsh
+fi
+
+
 # Add in Powerlevel10k
 zinit ice depth=1; zinit light romkatv/powerlevel10k
 
@@ -87,39 +99,11 @@ zstyle ':completion:*' menu no
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
-# ls commands
-alias ls='ls --color'
-alias la='ls -a'
-alias ll='ls -al'
-alias lu='ls -alu' # shows last Access time
-alias lc='ls -alc' # shows last Change time
-
-# general commands
-alias vim='nvim'
-alias cls='clear'
-alias x='exit'
-
-# git commands
-alias ginit='git init'
-alias gadd='git add .'
-alias gcommit='git commit -m'
-alias grao='git remote add origin'
-
-# tmux commands
-alias tnew='tmux new -s'
-alias tat='tmux attach -t'
-alias td='tmux detach'
-alias tls='tmux ls'
-alias tkill='tmux kill-session -t'
 
 # Shell integrations
 eval "$(fzf --zsh)"
 eval "$(zoxide init --cmd cd zsh)"
 
-# Path Variables
-export GOPATH="/home/soumo/go"
-export GOBIN="/home/soumo/go/bin"
-export ELIXIR_ERL_OPTIONS="+fnu"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
