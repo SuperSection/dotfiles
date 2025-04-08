@@ -38,3 +38,7 @@ alias dimg='docker images'
 alias dnet='docker network ls'
 alias dps='docker ps -a'
 alias dconids='docker ps -aq'
+
+# DevOps tools commands
+alias k=kubectl
+complete -o default -F __start_kubectl k
