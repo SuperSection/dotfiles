@@ -41,4 +41,7 @@ alias dconids='docker ps -aq'
 
 # DevOps tools commands
 alias k=kubectl
-complete -o default -F __start_kubectl k
+
+keycodes() {
+  xev | awk -F'[ )]+' '/^KeyPress/ { a[NR+2] } NR in a { printf "%-3s %s\n", $5, $8 }'
+}
