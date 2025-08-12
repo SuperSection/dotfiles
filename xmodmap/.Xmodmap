@@ -1,3 +1,8 @@
 ! Remap Menu to Right Control
-keycode 105 = Menu
+keycode 105 = Control_R
 keycode 135 = Control_R
+
+! Move Caps_Lock to Esc, Esc to Ctrl_L, and Ctrl_L to Caps_Lock
+keycode 9 = Caps_Lock
+keycode 66 = Control_L
+keycode 37 = Escape
