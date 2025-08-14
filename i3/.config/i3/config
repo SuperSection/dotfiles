@@ -12,12 +12,12 @@
 for_window [class="^.*"] border pixel 1
 
 # set $mod Mod4
-set $mod Mod1
+set $mod Mod4
 
 exec --no-startup-id picom
 exec --no-startup-id xrdb -merge ~/.Xresourcer
-# exec_always --no-startup-id xmodmap ~/.Xmodmap
-exec_always --no-startup-id setxkbmap -layout us -option "ctrl:swapcaps,ctrl:menu_rctrl"
+exec_always --no-startup-id xmodmap ~/.Xmodmap
+# exec_always --no-startup-id setxkbmap -layout us -option "ctrl:swapcaps,ctrl:menu_rctrl"
 
 # kill any hanging polybar processes
 exec_always killall polybar
