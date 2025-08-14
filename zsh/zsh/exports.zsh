@@ -12,3 +12,6 @@ export PATH=$PATH:/opt/gradle/gradle-8.12.1/bin
 # AWS devops access key setup
 export AWS_ACCESS_KEY_ID=
 export AWS_SECRET_ACCESS_KEY=
+
+
+export XDG_DATA_DIRS=:/var/lib/flatpak/exports/share:/home/supersection/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/home/supersection/.local/share/flatpak/exports/share
