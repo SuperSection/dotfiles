@@ -1,27 +1,36 @@
 // -*- mode: jsonc -*-
 {
-    // "layer": "top", // Waybar at top layer
-    // "position": "bottom", // Waybar position (top|bottom|left|right)
-    "height": 26, // Waybar height (to be removed for auto height)
-    // "width": 1280, // Waybar width
-    "spacing": 4, // Gaps between modules (4px)
+    // General Settings
+    // "layer": "top",     // Waybar at top layer
+    "position": "top",  // Waybar position (top|bottom|left|right)
+    "height": 25,       // Waybar height (to be removed for auto height)
+    // "width": 1280,      // Waybar width
+    
+    "margin-top": 5,
+    "margin-bottom": 0,
+    "spacing": 4,       // Gaps between modules (4px)
+
+    
     // Choose the order of the modules
     "modules-left": [
-        "hyprland/workspaces",
-        "custom/media"
-    ],
-    "modules-center": [
+        "custom/appmenu",
+        "wlr/taskbar",
+        "group/quicklinks",
         "hyprland/window"
     ],
+    "modules-center": [
+        "hyprland/workspaces"
+    ],
     "modules-right": [
+        "custom/updates",
         "pulseaudio",
         "network",
-        "power-profiles-daemon",
-        "backlight",
-        "keyboard-state",
+        "group/hardware",
+        // "custom/exit",
         "battery",
         "clock",
     ],
+
     // Modules configuration
     "hyprland/workspaces": {
         "disable-scroll": true,
@@ -48,10 +57,10 @@
             "unlocked": ""
         }
     },
-    "sway/mode": {
+    "hyprland/mode": {
         "format": "<span style=\"italic\">{}</span>"
     },
-    "sway/scratchpad": {
+    "hyprland/scratchpad": {
         "format": "{icon} {count}",
         "show-empty": false,
         "format-icons": ["", ""],
@@ -99,18 +108,164 @@
         //   "TelegramDesktop": "$HOME/.local/share/icons/hicolor/16x16/apps/telegram.png"
         // }
     },
+    
+    // Clock
     "clock": {
-        // "timezone": "America/New_York",
-        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-        "format-alt": "{:%Y-%m-%d}"
+        "timezone": "Asia/Kolkata",
+        "format": "{:%I:%M %p, %a %d}",
+        "on-click": "flatpak run com.ml4w.calendar",
+        "tooltip-format": "{:%A, %d %B %Y %H:%M:%S}"
     },
+    
+    // CPU
     "cpu": {
         "format": "{usage}% ",
+        "on-click": "~/.config/super/settings/system-monitor.sh",
         "tooltip": false
     },
+
+    // Memory
     "memory": {
-        "format": "{}% "
+        "format": "{}% ",
+        "on-click": "~/.config/super/settings/system-monitor.sh"
     },
+
+    // Hard-disc space used
+    "disk": {
+        "interval": 30,
+        "format": "D {percentage_used}% ",
+        "path": "/",
+        "on-click": "~/.config/super/settings/system-monitor.sh"
+    },
+
+
+    // Group Hardware
+    "group/hardware": {
+        "orientation": "horizontal",
+        "drawer": {
+            "transition-duration": 300,
+            "children-class": "not-memory",
+            "transition-left-to-right": false
+        },
+        "modules": ["custom/system", "disk", "cpu", "memory"]
+    },
+
+    // Group Tools
+    "group/tools": {
+        "orientation": "inherit",
+        "drawer": {
+            "transition-duration": 300,
+            "children-class": "not-memory",
+            "transition-left-to-right": false
+        },
+        "modules": [
+            "custom/tools",
+            "custom/cliphist",
+            "custom/hypridle",
+            "custom/hyprshade"
+        ]
+    },
+
+    // Group Links
+    "group/links": {
+        "orientation": "horizontal",
+        "modules": [
+            "custom/chatgpt",
+            "custom/firefox"
+        ]
+    },
+
+    // Group Settings
+    "group/settings": {
+        "orientation": "inherit",
+        "drawer": {
+            "transition-duration": 300,
+            "children-class": "not-memory",
+            "transition-left-to-right": true
+        },
+        "modules": [
+            "custom/settings",
+            "custom/waybarthemes",
+            "custom/wallpaper"
+        ]
+    },
+
+    // Taskbar
+    "wlr/taskbar": {
+        "format": "{icon}",
+        "icon-size": 18,
+        "tooltip-format": "{title}",
+        "on-click": "activate",
+        "on-click-middle": "close",
+        "ignore-list": ["Alacritty", "kitty"],
+        "app_ids-mapping": {
+            "firefoxdeveloperedition": "firefox-developer-edition"
+        },
+        "rewrite": {
+            "Firefox Web Browser": "Firefox",
+            "Foot Server": "Terminal"
+        }
+    },
+
+    // Hyprland Window
+    "hyprland/window": {
+        "max-length": 60,
+        "rewrite": {
+            "(.*) - Brave": "$1",
+            "(.*) - Chromium": "$1",
+            "(.*) - Brave Search": "$1",
+            "(.*) - Outlook": "$1",
+            "(.*) Microsoft Teams": "$1"
+        },
+        "separate-outputs": true
+    },
+
+    // Updates Count
+    "custom/updates": {
+        "format": "  {}",
+        "escape": true,
+        "return-type": "json",
+        "exec": "~/.config/ml4w/scripts/updates.sh",
+        "interval": 1800,
+        "signal": 1,
+        "hide-empty-text": true,
+        "on-click": "~/.config/ml4w/settings/installupdates.sh"
+    },
+
+    // Wallpaper
+    "custom/wallpaper": {
+        "format": "",
+        "on-click": "bash -c waypaper &",
+        "on-click-right": "~/.config/hypr/scripts/wallpaper-effects.sh",
+        "tooltip-format": "Left: Select a wallpaper\nRight: Select wallpaper effect"
+    },
+
+    // Rofi Application Launcher
+    "custom/appmenu": {
+        // START APPS LABEL
+        "format": "Apps",
+        // END APPS LABEL
+        "on-click": "sleep 0.2;pkill rofi || rofi -show drun -replace",
+        "on-click-right": "~/.config/hypr/scripts/keybindings.sh",
+        "tooltip-format": "Left: Open the application launcher\nRight: Show all keybindings"
+    },
+
+    // Rofi Application Launcher
+    "custom/appmenuicon": {
+        "format": "",
+        "on-click": "sleep 0.2;rofi -show drun -replace",
+        "on-click-right": "~/.config/hypr/scripts/keybindings.sh",
+        "tooltip-format": "Left: Open the application launcher\nRight: Show all keybindings"
+    },
+
+    // Power Menu
+    "custom/exit": {
+        "format": "",
+        "on-click": "~/.config/ml4w/scripts/wlogout.sh",
+        "on-click-right": "hyprlock",
+        "tooltip-format": "Left: Power menu\nRight: Lock screen"
+    },
+
     "temperature": {
         // "thermal-zone": 2,
         // "hwmon-path": "/sys/class/hwmon/hwmon2/temp1_input",
@@ -139,9 +294,7 @@
         // "format-full": "",
         "format-icons": ["", "", "", "", ""]
     },
-    "battery#bat2": {
-        "bat": "BAT2"
-    },
+
     "power-profiles-daemon": {
       "format": "{icon}",
       "tooltip-format": "Power profile: {profile}\nDriver: {driver}",
@@ -195,14 +348,14 @@
     },
     "custom/power": {
         "format" : "⏻ ",
-		"tooltip": false,
-		"menu": "on-click",
-		"menu-file": "$HOME/.config/waybar/power_menu.xml", // Menu file in resources folder
-		"menu-actions": {
-			"shutdown": "shutdown",
-			"reboot": "reboot",
-			"suspend": "systemctl suspend",
-			"hibernate": "systemctl hibernate"
-		}
+        "tooltip": false,
+        "menu": "on-click",
+        "menu-file": "$HOME/.config/waybar/power_menu.xml", // Menu file in resources folder
+        "menu-actions": {
+            "shutdown": "shutdown",
+            "reboot": "reboot",
+            "suspend": "systemctl suspend",
+            "hibernate": "systemctl hibernate"
+        }
     }
 }
