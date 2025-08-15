@@ -118,5 +118,6 @@ export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
 
-eval "$(ssh-agent -s)"
-ssh-add /home/supersection/.ssh/gitlab
+# Start ssh-agent if not already running
+eval $(keychain --quiet --eval ~/.ssh/gitlab)
+
