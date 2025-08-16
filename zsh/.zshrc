@@ -75,6 +75,11 @@ bindkey '^p' history-search-backward
 bindkey '^n' history-search-forward
 bindkey '^[w' kill-region
 
+# Ctrl+Left/Right for word navigation
+bindkey '^[[1;5D' backward-word   # Ctrl+Left
+bindkey '^[[1;5C' forward-word    # Ctrl+Right
+
+
 # History
 HISTSIZE=5000
 HISTFILE=~/.zsh_history
