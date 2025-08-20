@@ -204,7 +204,7 @@ return {
         })
       end,
       ["tailwindcss"] = function()
-        -- configure emmet language server
+        -- configure Tailwind CSS language server
         lspconfig["tailwindcss"].setup({
           capabilities = capabilities,
           init_options = {
@@ -340,6 +340,22 @@ return {
           cmd = { "gopls" },
           filetypes = { "go", "gotmpl" }, -- Templ is Go template files
           root_dir = lspconfig.util.root_pattern("go.mod", ".git"),
+        })
+      end,
+      ["rust_analyzer"] = function()
+        -- configure rust-analyzer
+        lspconfig["rust_analyzer"].setup({
+          capabilities = capabilities,
+          on_attach = require("soumo.plugins").on_attach,
+          filetypes = { "rust" },
+          root_dir = lspconfig.util.root_pattern("Cargo.toml"),
+          settings = {
+            ["rust-analyzer"] = {
+              cargo = {
+                allFeatures = true,
+              },
+            },
+          },
         })
       end,
       ["html"] = function()
