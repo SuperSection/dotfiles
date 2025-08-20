@@ -57,6 +57,7 @@ return {
         "golangci-lint", -- go linter
         "eslint_d",
         "shellcheck",
+        "codelldb",
         "taplo", -- toml formatter
         "yamlfix", -- yml formatter
       },
