@@ -16,12 +16,15 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 -- Setup lazy.nvim
-require("lazy").setup({ { import = "soumo.plugins" }, { import = "soumo.plugins.lsp" } }, {
-  checker = {
-    enabled = true,
-    notify = false,
-  },
-  change_detection = {
-    notify = false,
-  },
-})
+require("lazy").setup(
+  { { import = "soumo.plugins" }, { import = "soumo.plugins.lsp" }, { import = "soumo.plugins.rust" } },
+  {
+    checker = {
+      enabled = true,
+      notify = false,
+    },
+    change_detection = {
+      notify = false,
+    },
+  }
+)
