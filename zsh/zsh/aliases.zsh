@@ -11,6 +11,11 @@ alias cls='clear'
 alias x='exit'
 alias lg='lazygit'
 
+# system commands
+alias poweroff='sudo systemctl poweroff'
+alias suspend='sudo systemctl suspend'
+alias reboot='sudo systemctl reboot'
+
 # git commands
 alias ginit='git init'
 alias gadd='git add .'
@@ -42,6 +47,7 @@ alias dconids='docker ps -aq'
 # DevOps tools commands
 alias k=kubectl
 
+# View keycodes and attached key to it
 keycodes() {
   xev | awk -F'[ )]+' '/^KeyPress/ { a[NR+2] } NR in a { printf "%-3s %s\n", $5, $8 }'
 }
