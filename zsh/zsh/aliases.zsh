@@ -7,7 +7,7 @@ alias lc='ls -alc' # shows last Change time
 
 # general commands
 alias vim='nvim'
-alias cls='clear'
+alias c='clear'
 alias x='exit'
 alias lg='lazygit'
 
@@ -18,12 +18,13 @@ alias reboot='sudo systemctl reboot'
 
 # git commands
 alias ginit='git init'
-alias gadd='git add .'
-alias gcommit='git commit -m'
-alias grao='git remote add origin'
-alias gs='git status'
-alias glog='git log'
+alias ga='git add .'
+alias gc='git commit -m'
 alias gcom='git add --all && git commit -m'
+alias grao='git remote add origin'
+alias gs='git status -s'
+alias glog='git log'
+alias gl='git log --oneline --graph --all'
 alias gb='git branch'
 alias gchb='git checkout -b'
 alias gch='git checkout'
