@@ -81,7 +81,7 @@ bindkey '^[[1;5C' forward-word    # Ctrl+Right
 
 
 # History
-HISTSIZE=5000
+HISTSIZE=10000
 HISTFILE=~/.zsh_history
 SAVEHIST=$HISTSIZE
 HISTDUP=erase
@@ -95,7 +95,7 @@ setopt hist_find_no_dups
 
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall
-zstyle :compinstall filename '/home/soumo/.zshrc'
+zstyle :compinstall filename "$HOME/.zshrc"
 
 # Completion styling
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
@@ -107,22 +107,23 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
 # Shell integrations
 eval "$(fzf --zsh)"
-eval "$(zoxide init --cmd cd zsh)"
+eval "$(zoxide init zsh)"
 
-PROMPT='%1~ '
+# FZF with Git right in the shell by Junegunn : check out his github below
+# Keymaps for this is available at https://github.com/junegunn/fzf-git.sh
+source ~/scripts/fzf-git.sh
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
 
 # Set up kubectl autocomplete
 [[ $commands[kubectl] ]] && source <(kubectl completion zsh)
 
+# Start ssh-agent if not already running
+eval $(keychain --quiet --eval ~/.ssh/gitlab)
+
+
+
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
-
-
-# Start ssh-agent if not already running
-eval $(keychain --quiet --eval ~/.ssh/gitlab)
 
