@@ -7,13 +7,9 @@ return {
   config = function()
     local mason_registry = require("mason-registry")
     local codelldb = mason_registry.get_package("codelldb")
-    local extension_path = codelldb:get_install_path() .. "/extension/"
-    local codelldb_path = extension_path .. "adapter/codelldb"
 
-    -- Check if codelldb is installed
-    if not codelldb or not codelldb.is_installed then
-      return
-    end
+    local extension_path = vim.fn.stdpath("data") .. "/mason/packages/codelldb/extension/"
+    local codelldb_path = extension_path .. "adapter/codelldb"
 
     -- Set the correct lldb library path based on the operating system
     local lldb_lib_path
