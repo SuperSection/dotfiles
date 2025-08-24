@@ -35,6 +35,17 @@ alias tat='tmux attach -t'
 alias td='tmux detach'
 alias tls='tmux ls'
 alias tkill='tmux kill-session -t'
+# calls the tmux new session script
+alias tns="~/scripts/tmux-sessionizer"
+
+# fzf 
+# called from ~/scripts/
+alias nlof="~/scripts/fzf_listoldfiles.sh"
+# opens documentation through fzf (eg: git,zsh etc.)
+alias fman="compgen -c | fzf | xargs man"
+
+# zoxide (called from ~/scripts/)
+alias nzo="~/scripts/zoxide_openfiles_nvim.sh"
 
 # docker commands
 alias dstop='docker stop $(docker ps -aq)'
