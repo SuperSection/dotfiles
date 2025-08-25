@@ -346,7 +346,9 @@ return {
         -- configure rust-analyzer
         lspconfig["rust_analyzer"].setup({
           capabilities = capabilities,
-          on_attach = require("soumo.plugins").on_attach,
+          on_attach = function(client, bufnr)
+            require("soumo.plugins").on_attach(client, bufnr)
+          end,
           filetypes = { "rust" },
           root_dir = lspconfig.util.root_pattern("Cargo.toml"),
           settings = {
