@@ -342,24 +342,24 @@ return {
           root_dir = lspconfig.util.root_pattern("go.mod", ".git"),
         })
       end,
-      ["rust_analyzer"] = function()
-        -- configure rust-analyzer
-        lspconfig["rust_analyzer"].setup({
-          capabilities = capabilities,
-          on_attach = function(client, bufnr)
-            require("soumo.plugins").on_attach(client, bufnr)
-          end,
-          filetypes = { "rust" },
-          root_dir = lspconfig.util.root_pattern("Cargo.toml"),
-          settings = {
-            ["rust-analyzer"] = {
-              cargo = {
-                allFeatures = true,
-              },
-            },
-          },
-        })
-      end,
+      -- ["rust_analyzer"] = function()
+      --   -- configure rust-analyzer
+      --   lspconfig["rust_analyzer"].setup({
+      --     capabilities = capabilities,
+      --     on_attach = function(client, bufnr)
+      --       require("soumo.plugins").on_attach(client, bufnr)
+      --     end,
+      --     filetypes = { "rust" },
+      --     root_dir = lspconfig.util.root_pattern("Cargo.toml"),
+      --     settings = {
+      --       ["rust-analyzer"] = {
+      --         cargo = {
+      --           allFeatures = true,
+      --         },
+      --       },
+      --     },
+      --   })
+      -- end,
       ["html"] = function()
         -- configure HTML LSP for HTMX
         lspconfig["html"].setup({

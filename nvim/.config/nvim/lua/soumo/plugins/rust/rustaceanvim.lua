@@ -27,13 +27,12 @@ return {
       },
       server = {
         on_attach = function(client, bufnr)
-          -- your on_attach logic
-          require("soumo.plugins").on_attach(client, bufnr)
+          -- require("soumo.plugins").on_attach(client, bufnr)
         end,
         default_settings = {
           ["rust-analyzer"] = {
             cargo = { allFeatures = true },
-            checkOnSave = { command = "clippy" },
+            check = { command = "clippy" },
           },
         },
       },
