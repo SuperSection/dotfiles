@@ -17,9 +17,9 @@ opt.number = true
 
 -- Tabs / Indentation
 opt.expandtab = true -- convert tabs to spaces
-opt.tabstop = 2 -- number of spaces inserted for tab character
-opt.softtabstop = 2 -- number of spaces inserted for <Tab> key
-opt.shiftwidth = 2 -- number of spaces inserted for each indentation level
+opt.tabstop = 4 -- number of spaces inserted for tab character
+opt.softtabstop = 4 -- number of spaces inserted for <Tab> key
+opt.shiftwidth = 4 -- number of spaces inserted for each indentation level
 opt.autoindent = true
 opt.smartindent = true -- enable smart indentation
 opt.breakindent = true -- enable line breaking indentation
