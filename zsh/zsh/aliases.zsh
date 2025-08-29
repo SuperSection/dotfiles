@@ -16,6 +16,10 @@ alias poweroff='sudo systemctl poweroff'
 alias suspend='sudo systemctl suspend'
 alias reboot='sudo systemctl reboot'
 
+# windows mount
+alias C='cd /mnt/windows_C'
+alias D='cd /mnt/windows_D'
+
 # git commands
 alias ginit='git init'
 alias ga='git add .'
