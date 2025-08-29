@@ -123,6 +123,7 @@ return {
       ["ts_ls"] = function()
         -- configure typescript server
         lspconfig["ts_ls"].setup({
+          filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
           single_file_support = false,
           capabilities = capabilities,
           on_attach = function(client, bufnr)
@@ -160,6 +161,7 @@ return {
       ["eslint"] = function()
         -- configure eslint language server
         lspconfig["eslint"].setup({
+          filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "html" },
           settings = {
             codeAction = {
               disableRuleComment = {
@@ -201,6 +203,17 @@ return {
               { desc = "Format with ESLint" }
             )
           end,
+        })
+      end,
+      ["cssls"] = function()
+        -- Setup CSS LS
+        lspconfig.cssls.setup({
+          capabilities = capabilities,
+          settings = {
+            css = { validate = true },
+            scss = { validate = true },
+            less = { validate = true },
+          },
         })
       end,
       ["tailwindcss"] = function()
@@ -342,28 +355,32 @@ return {
           root_dir = lspconfig.util.root_pattern("go.mod", ".git"),
         })
       end,
-      -- ["rust_analyzer"] = function()
-      --   -- configure rust-analyzer
-      --   lspconfig["rust_analyzer"].setup({
-      --     capabilities = capabilities,
-      --     on_attach = function(client, bufnr)
-      --       require("soumo.plugins").on_attach(client, bufnr)
-      --     end,
-      --     filetypes = { "rust" },
-      --     root_dir = lspconfig.util.root_pattern("Cargo.toml"),
-      --     settings = {
-      --       ["rust-analyzer"] = {
-      --         cargo = {
-      --           allFeatures = true,
-      --         },
-      --       },
-      --     },
-      --   })
-      -- end,
+      ["rust_analyzer"] = function()
+        -- configure rust-analyzer
+        lspconfig["rust_analyzer"].setup({
+          capabilities = capabilities,
+          filetypes = { "rust" },
+          root_dir = lspconfig.util.root_pattern("Cargo.toml"),
+          settings = {
+            ["rust-analyzer"] = {
+              cargo = {
+                allFeatures = true,
+              },
+            },
+          },
+        })
+      end,
       ["html"] = function()
         -- configure HTML LSP for HTMX
         lspconfig["html"].setup({
           filetypes = { "html", "htmldjango", "templ" }, -- HTML and templates
+          init_options = {
+            configurationSection = { "html", "javascript", "typescript", "css" },
+            embeddedLanguages = {
+              css = true,
+              javascript = true, -- <-- this enables JS inside <script>
+            },
+          },
           settings = {
             html = {
               format = {
