@@ -48,12 +48,12 @@ return {
       pre_hook = ts_context_commentstring.create_pre_hook(),
 
       -- Post-hook configuration (example: formatting comments with prettier)
-      post_hook = function(opts)
-        -- Assuming you have a formatter setup like nvim-prettier
-        if vim.fn.executable("prettier") == 1 then
-          vim.cmd("Prettier")
-        end
-      end,
+      -- post_hook = function(opts)
+      --   -- Assuming you have a formatter setup like nvim-prettier
+      --   if vim.fn.executable("prettier") == 1 then
+      --     vim.cmd("Prettier")
+      --   end
+      -- end,
     })
   end,
 }
