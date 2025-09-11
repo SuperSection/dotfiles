@@ -89,6 +89,12 @@ return {
     -- used to enable autocompletion (assign to every lsp server config)
     local capabilities = cmp_nvim_lsp.default_capabilities()
 
+    local on_attach = function(client, bufnr)
+      local bufopts = { noremap = true, silent = true, buffer = bufnr }
+      vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
+      vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
+    end
+
     -- Change the Diagnostic symbols in the sign column (gutter)
     -- (not in youtube nvim video)
     local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
@@ -350,8 +356,10 @@ return {
       ["gopls"] = function()
         -- configure Go LSP for Templ
         lspconfig["gopls"].setup({
+          capabilities = capabilities,
+          on_attach = on_attach,
           cmd = { "gopls" },
-          filetypes = { "go", "gotmpl" }, -- Templ is Go template files
+          filetypes = { "go", "gomod", "gowork", "gotmpl" },
           root_dir = lspconfig.util.root_pattern("go.mod", ".git"),
         })
       end,
