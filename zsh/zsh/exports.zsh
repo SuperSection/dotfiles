@@ -32,6 +32,10 @@ export AWS_ACCESS_KEY_ID=
 export AWS_SECRET_ACCESS_KEY=
 
 
+# Android Studio
+export ANDROID_HOME=$HOME/Android/Sdk && export PATH=$PATH:$ANDROID_HOME/emulator && export PATH=$PATH:$ANDROID_HOME/platform-tools
+
+
 # flatpak
 export XDG_DATA_DIRS=:/var/lib/flatpak/exports/share:/home/supersection/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/home/supersection/.local/share/flatpak/exports/share
 
