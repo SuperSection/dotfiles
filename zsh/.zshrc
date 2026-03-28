@@ -119,6 +119,9 @@ source ~/scripts/fzf-git.sh
 [[ $commands[kubectl] ]] && source <(kubectl completion zsh)
 
 # Start ssh-agent if not already running
+# eval "$(ssh-agent -s)"
+# ssh-add ~/.ssh/soumosarkar297
+# ssh-add ~/.ssh/id_ed25519
 eval $(keychain --quiet --eval ~/.ssh/gitlab)
 
 
@@ -127,3 +130,6 @@ eval $(keychain --quiet --eval ~/.ssh/gitlab)
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
+
+# Added by CodeRabbit CLI installer
+export PATH="/home/supersection/.local/bin:$PATH"
