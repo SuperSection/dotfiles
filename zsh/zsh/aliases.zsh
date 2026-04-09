@@ -1,5 +1,5 @@
 # ls commands
-alias ls='ls --color'
+alias ls='ls --color -p'
 alias la='ls -a'
 alias ll='ls -alh'
 alias lu='ls -alu' # shows last Access time
