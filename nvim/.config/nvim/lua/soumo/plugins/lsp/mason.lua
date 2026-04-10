@@ -6,12 +6,24 @@ return {
   },
   config = function()
     -- import mason
-    local mason = require("mason")
+    local ok_mason, mason = pcall(require, "mason")
+    if not ok_mason then
+      vim.notify("mason.nvim is not installed!", vim.log.levels.ERROR)
+      return
+    end
 
     -- import mason-lspconfig
-    local mason_lspconfig = require("mason-lspconfig")
+    local ok_mason_lspconfig, mason_lspconfig = pcall(require, "mason-lspconfig")
+    if not ok_mason_lspconfig then
+      vim.notify("mason-lspconfig.nvim is not installed!", vim.log.levels.ERROR)
+      return
+    end
 
-    local mason_tool_installer = require("mason-tool-installer")
+    local ok_mason_tool_installer, mason_tool_installer = pcall(require, "mason-tool-installer")
+    if not ok_mason_tool_installer then
+      vim.notify("mason-tool-installer.nvim is not installed!", vim.log.levels.ERROR)
+      return
+    end
 
     -- enable mason and configure icons
     mason.setup({
@@ -27,13 +39,13 @@ return {
     mason_lspconfig.setup({
       -- list of servers for mason to install
       ensure_installed = {
-        -- "asm_lsp",
-        "ts_ls",
-        "html",
-        "cssls",
+        -- "asm_lsp,
+        "ts_ls", -- typescript-language-server
+        "html", -- HTML
+        "cssls", -- CSS
         "tailwindcss",
         "svelte",
-        "lua_ls",
+        "lua_ls", -- Lua (lua-language-server)
         "graphql",
         "emmet_ls",
         "prismals",
@@ -41,6 +53,7 @@ return {
         "gopls",
         "rust_analyzer",
         "tflint",
+        "eslint", -- ESLint language server
       },
     })
 

@@ -7,33 +7,21 @@ return {
     { "folke/neodev.nvim", opts = {} },
   },
   config = function()
-    -- import lspconfig plugin
-    local lspconfig = require("lspconfig")
-
     -- import mason_lspconfig plugin
-    local mason_lspconfig = require("mason-lspconfig")
-
-    -- import cmp-nvim-lsp plugin
-    local cmp_nvim_lsp = require("cmp_nvim_lsp")
-
-    -- Learning LSP
-    local client_mylsp = vim.lsp.start_client({
-      name = "learninglsp",
-      cmd = { "/home/soumo/go/src/learninglsp/main" },
-      on_attach = require("soumo.plugins").on_attach,
-    })
-
-    if not client_mylsp then
-      vim.notify("Hey you didn't do the client thing good")
+    ---@type boolean, table
+    local ok_mason_lspconfig, mason_lspconfig = pcall(require, "mason-lspconfig")
+    if not ok_mason_lspconfig then
+      vim.notify("mason-lspconfig.nvim is not installed!", vim.log.levels.ERROR)
       return
     end
 
-    vim.api.nvim_create_autocmd("FileType", {
-      pattern = "markdown",
-      callback = function()
-        vim.lsp.buf_attach_client(0, client_mylsp)
-      end,
-    })
+    -- import cmp-nvim-lsp plugin
+    ---@type boolean, table
+    local ok_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+    if not ok_cmp then
+      vim.notify("cmp_nvim_lsp is not installed!", vim.log.levels.ERROR)
+      return
+    end
 
     local keymap = vim.keymap -- for conciseness
 
@@ -73,10 +61,14 @@ return {
         keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts) -- show diagnostics for line
 
         opts.desc = "Go to previous diagnostic"
-        keymap.set("n", "[d", vim.diagnostic.goto_prev, opts) -- jump to previous diagnostic in buffer
+        keymap.set("n", "[d", function()
+          vim.diagnostic.jump({ count = -1 })
+        end, opts) -- jump to previous diagnostic in buffer
 
         opts.desc = "Go to next diagnostic"
-        keymap.set("n", "]d", vim.diagnostic.goto_next, opts) -- jump to next diagnostic in buffer
+        keymap.set("n", "]d", function()
+          vim.diagnostic.jump({ count = 1 })
+        end, opts) -- jump to next diagnostic in buffer
 
         opts.desc = "Show documentation for what is under cursor"
         keymap.set("n", "K", vim.lsp.buf.hover, opts) -- show documentation for what is under cursor
@@ -103,17 +95,20 @@ return {
       vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
     end
 
-    mason_lspconfig.setup_handlers({
-      -- default handler for installed servers
-      function(server_name)
-        lspconfig[server_name].setup({
-          capabilities = capabilities,
-          inlay_hints = { enable = true },
-        })
-      end,
-      ["svelte"] = function()
+    -- setup servers manually
+    local servers = mason_lspconfig.get_installed_servers()
+
+    -- Setup mason-lspconfig with the server list and disable automatic enabling
+    mason_lspconfig.setup({
+      ensure_installed = servers,
+      automatic_installation = false, -- do not auto-install; use Mason UI to install manually
+      automatic_enable = false, -- disable auto enabling; we enable each manually
+    })
+
+    for _, lsp in ipairs(servers) do
+      if lsp == "svelte" then
         -- configure svelte server
-        lspconfig["svelte"].setup({
+        vim.lsp.config("svelte", {
           capabilities = capabilities,
           on_attach = function(client, bufnr)
             vim.api.nvim_create_autocmd("BufWritePost", {
@@ -125,10 +120,9 @@ return {
             })
           end,
         })
-      end,
-      ["ts_ls"] = function()
+      elseif lsp == "ts_ls" then
         -- configure typescript server
-        lspconfig["ts_ls"].setup({
+        vim.lsp.config("ts_ls", {
           filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
           single_file_support = false,
           capabilities = capabilities,
@@ -163,10 +157,9 @@ return {
             },
           },
         })
-      end,
-      ["eslint"] = function()
+      elseif lsp == "eslint" then
         -- configure eslint language server
-        lspconfig["eslint"].setup({
+        vim.lsp.config("eslint", {
           filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "html" },
           settings = {
             codeAction = {
@@ -210,10 +203,9 @@ return {
             )
           end,
         })
-      end,
-      ["cssls"] = function()
+      elseif lsp == "cssls" then
         -- Setup CSS LS
-        lspconfig.cssls.setup({
+        vim.lsp.config("cssls", {
           capabilities = capabilities,
           settings = {
             css = { validate = true },
@@ -221,10 +213,9 @@ return {
             less = { validate = true },
           },
         })
-      end,
-      ["tailwindcss"] = function()
+      elseif lsp == "tailwindcss" then
         -- configure Tailwind CSS language server
-        lspconfig["tailwindcss"].setup({
+        vim.lsp.config("tailwindcss", {
           capabilities = capabilities,
           init_options = {
             userLanguages = {
@@ -257,30 +248,31 @@ return {
             },
           },
         })
-      end,
-      ["graphql"] = function()
+      elseif lsp == "graphql" then
         -- configure graphql language server
-        lspconfig["graphql"].setup({
+        vim.lsp.config("graphql", {
           capabilities = capabilities,
           filetypes = { "graphql", "gql", "svelte", "typescriptreact", "javascriptreact" },
         })
-      end,
-      ["emmet_ls"] = function()
+      elseif lsp == "emmet_ls" then
         -- configure emmet language server
-        lspconfig["emmet_ls"].setup({
+        vim.lsp.config("emmet_ls", {
           capabilities = capabilities,
           filetypes = { "html", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "svelte" },
         })
-      end,
-      ["lua_ls"] = function()
+      elseif lsp == "lua_ls" then
         -- configure lua server (with special settings)
-        lspconfig["lua_ls"].setup({
+        vim.lsp.config("lua_ls", {
           single_file_support = true,
           capabilities = capabilities,
           settings = {
             Lua = {
               workspace = {
+                library = vim.api.nvim_get_runtime_file("", true),
                 checkThirdParty = false,
+              },
+              telemetry = {
+                enable = false,
               },
               misc = {
                 parameters = {
@@ -300,6 +292,9 @@ return {
               },
               type = {
                 castNumberToInteger = true,
+              },
+              runtime = {
+                version = "LuaJIT",
               },
               -- make the language server recognize "vim" global
               diagnostics = {
@@ -339,10 +334,9 @@ return {
             },
           },
         })
-      end,
-      ["elixirls"] = function()
+      elseif lsp == "elixirls" then
         -- configure emmet language server
-        lspconfig["elixirls"].setup({
+        vim.lsp.config("elixirls", {
           capabilities = capabilities,
           cmd = { "elixir-ls" }, -- Assuming mason installed the correct binary
           settings = {
@@ -352,23 +346,25 @@ return {
             },
           },
         })
-      end,
-      ["gopls"] = function()
+      elseif lsp == "gopls" then
         -- configure Go LSP for Templ
-        lspconfig["gopls"].setup({
+        vim.lsp.config("gopls", {
           capabilities = capabilities,
           on_attach = on_attach,
           cmd = { "gopls" },
           filetypes = { "go", "gomod", "gowork", "gotmpl" },
-          root_dir = lspconfig.util.root_pattern("go.mod", ".git"),
+          root_dir = function(bufnr)
+            return vim.fs.root(bufnr, { "go.mod", ".git" }) or vim.loop.cwd()
+          end,
         })
-      end,
-      ["rust_analyzer"] = function()
+      elseif lsp == "rust_analyzer" then
         -- configure rust-analyzer
-        lspconfig["rust_analyzer"].setup({
+        vim.lsp.config("rust_analyzer", {
           capabilities = capabilities,
           filetypes = { "rust" },
-          root_dir = lspconfig.util.root_pattern("Cargo.toml"),
+          root_dir = function(bufnr)
+            return vim.fs.root(bufnr, { "Cargo.toml" }) or vim.loop.cwd()
+          end,
           settings = {
             ["rust-analyzer"] = {
               cargo = {
@@ -377,10 +373,9 @@ return {
             },
           },
         })
-      end,
-      ["html"] = function()
+      elseif lsp == "html" then
         -- configure HTML LSP for HTMX
-        lspconfig["html"].setup({
+        vim.lsp.config("html", {
           filetypes = { "html", "htmldjango", "templ" }, -- HTML and templates
           init_options = {
             configurationSection = { "html", "javascript", "typescript", "css" },
@@ -397,7 +392,13 @@ return {
             },
           },
         })
-      end,
-    })
+      else
+        -- default handler for installed servers
+        vim.lsp.config(lsp, {
+          capabilities = capabilities,
+          inlay_hints = { enable = true },
+        })
+      end
+    end
   end,
 }
