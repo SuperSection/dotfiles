@@ -35,6 +35,9 @@ return {
             check = { command = "clippy" },
           },
         },
+        extraEnv = {
+          RUSTFLAGS = "--cfg=web_sys_unstable_apis",
+        },
       },
       tools = { -- Optional settings for rust-analyzer
         server = {
