@@ -27,7 +27,9 @@ export PATH=$PATH:$GOPATH/bin
 export PATH=$PATH:$(go env GOPATH)/bin
 
 
+# Editor
 export EDITOR=nvim
+export VISUAL=nvim
 
 
 export PATH=$PATH:/opt/gradle/gradle-8.12.1/bin
@@ -62,3 +64,6 @@ export FZF_ALT_C_OPTS="--preview 'eza --icons=always --tree --color=always {} | 
 export FZF_TMUX_OPTS=" -p90%,70% "  
 # -----------------------------
 
+
+# Added by CodeRabbit CLI installer
+export PATH="/home/supersection/.local/bin:$PATH"
