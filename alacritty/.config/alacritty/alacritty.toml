@@ -39,7 +39,7 @@ white = "#ACB0D0"
 size = 12
 
 [font.bold]
-family = "JetBrainsMono Nerd Font"
+family = "JetBrainsMono Nerd Font Mono"
 style = "Bold"
 
 [font.bold_italic]
