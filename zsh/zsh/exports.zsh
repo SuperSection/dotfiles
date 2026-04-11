@@ -8,9 +8,13 @@ export NVM_DIR="$HOME/.nvm"
 
 # Configure pyenv
 export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
+[[ -d "$PYENV_ROOT/bin" ]] && export PATH="$PYENV_ROOT/bin:$PATH"
 
+pyenv() {
+  unset -f pyenv
+  eval "$(command pyenv init -)"
+  pyenv "$@"
+}
 
 # Add local ~/scripts to the PATH
 export PATH="$HOME/scripts:$PATH"
