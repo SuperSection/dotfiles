@@ -45,7 +45,7 @@ export ANDROID_HOME=$HOME/Android/Sdk && export PATH=$PATH:$ANDROID_HOME/emulato
 
 
 # flatpak
-export XDG_DATA_DIRS=:/var/lib/flatpak/exports/share:/home/supersection/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/home/supersection/.local/share/flatpak/exports/share
+export XDG_DATA_DIRS=/usr/local/share:/usr/share:/var/lib/flatpak/exports/share:$HOME/.local/share/flatpak/exports/share
 
 
 # ------------FZF--------------
