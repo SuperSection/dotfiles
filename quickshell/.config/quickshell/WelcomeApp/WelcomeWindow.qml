@@ -1,0 +1,550 @@
+import Quickshell
+import QtQuick
+import QtQuick.Layouts
+import QtQuick.Controls
+import Quickshell.Io
+import qs.CustomTheme
+
+FloatingWindow {
+    id: root
+    visible: false
+    title: "SuperSection Welcome"
+    implicitWidth: 850
+    implicitHeight: 550
+
+    // --- Guard property for the flatpak app ---
+    property bool isHyprlandSettingsInstalled: false
+
+    IpcHandler {
+        target: "welcome"
+        function toggle(): void {
+            root.visible = !root.visible
+        }
+    }
+
+    // --- Check if flatpak is installed when window opens ---
+    Process {
+        command: ["bash", "-c", Quickshell.env("HOME") + "/.config/supersection/scripts/supersection-flatpak-installed com.supersection.hyprlandsettings"]
+        running: root.visible
+        
+        stdout: StdioCollector {
+            onStreamFinished: {
+                console.log(this.text.trim())
+                // The script echoes "0" if the app exists/is installed
+                root.isHyprlandSettingsInstalled = (this.text.trim() === "0")
+            }
+        }
+    }
+
+    // Define a custom reusable styled MenuItem
+    component SuperSectionMenuItem: MenuItem {
+        id: control
+        
+        contentItem: Text {
+            text: control.text
+            font.family: Theme.fontFamily
+            font.pixelSize: 14
+            // Invert colors on hover
+            color: control.highlighted ? Theme.background : Theme.primary 
+            verticalAlignment: Text.AlignVCenter
+        }
+        
+        background: Rectangle {
+            implicitWidth: 220
+            implicitHeight: 36
+            // Apply theme color on hover
+            color: control.highlighted ? Theme.primary : "transparent"
+            radius: 4
+        }
+    }
+
+    component SuperSectionMenuSeparator: MenuSeparator {
+        contentItem: Rectangle {
+            implicitWidth: 200
+            implicitHeight: 1
+            color: Theme.primary
+            opacity: 0.3 // Dim the line so it doesn't distract from text
+        }
+    }
+
+    color: Theme.background
+
+    ColumnLayout {
+        anchors.fill: parent
+        spacing: 0
+
+        // ==========================================
+        // TRADITIONAL MENU BAR
+        // ==========================================
+        MenuBar {
+            Layout.fillWidth: true
+            Layout.margins: 10
+            background: Rectangle {
+                color: Theme.primary
+                border.color: Theme.primary
+                radius: 8
+            }
+
+            // --- SETTINGS MENU ---
+            Menu {
+                title: qsTr("Settings")
+                font.family: Theme.fontFamily
+                font.pixelSize: 14
+                padding:8
+
+                enter: Transition { NumberAnimation { property: "opacity"; from: 0.0; to: 1.0; duration: 200; easing.type: Easing.OutQuad } }
+                exit: Transition { NumberAnimation { property: "opacity"; from: 1.0; to: 0.0; duration: 150; easing.type: Easing.InQuad } }
+
+                SuperSectionMenuItem { 
+                    text: qsTr("Keyboard");
+                    onClicked: {
+                        Quickshell.execDetached(["gnome-text-editor", Quickshell.env("HOME") + "/.config/hypr/conf/keyboard.conf"])
+                    }
+                }
+                SuperSectionMenuItem { 
+                    text: qsTr("Monitors");
+                    onClicked: { 
+                        Quickshell.execDetached(["nwg-displays"])
+                    }
+                }
+                SuperSectionMenuItem { 
+                    text: qsTr("Network");
+                    onClicked: { 
+                        Quickshell.execDetached(["kitty", "--class", "dotfiles-floating", "-e", Quickshell.env("HOME") + "/.config/supersection/scripts/supersection-network"])
+                    }
+                }    
+                SuperSectionMenuItem { 
+                    text: qsTr("Bluetooth");
+                    onClicked: { 
+                        Quickshell.execDetached(["blueman-manager"])
+                    }
+                }
+                SuperSectionMenuItem { 
+                    text: qsTr("Wallpaper");
+                    onClicked: { 
+                        Quickshell.execDetached(["bash", "-c", Quickshell.env("HOME") + "/.config/supersection/scripts/supersection-wallpaper-app"])
+                    }
+                }
+                SuperSectionMenuItem { 
+                    text: qsTr("Theme");
+                    onClicked: { 
+                        Quickshell.execDetached(["nwg-look"])
+                    }
+                }
+                SuperSectionMenuSeparator {}
+                SuperSectionMenuItem { 
+                    text: qsTr("Sidebar");
+                    onClicked: {
+                        Quickshell.execDetached(["qs", "ipc", "call", "sidebar", "toggle"])
+                    }
+                }
+                SuperSectionMenuItem { 
+                    text: qsTr("Dotfiles Settings");
+                    onClicked: {
+                        Quickshell.execDetached(["qs", "-p", Quickshell.env("HOME") + "/.local/share/supersection-dotfiles-settings/quickshell", "ipc", "call", "settings", "toggle"])
+                    }
+                }
+                SuperSectionMenuItem { 
+                    text: root.isHyprlandSettingsInstalled ? qsTr("Hyprland Settings") : qsTr("Install Hyprland Settings")
+                    onClicked: { 
+                        if (root.isHyprlandSettingsInstalled) {
+                            Quickshell.execDetached(["bash","-c","flatpak run com.supersection.hyprlandsettings"])
+                        } else {
+                            Quickshell.execDetached(["kitty", "--class", "dotfiles-floating", "-e", Quickshell.env("HOME") + "/.config/supersection/scripts/supersection-install-hyprlandsettings"])
+                        }
+                    }
+                }
+                background: Rectangle {
+                    implicitWidth: 220
+                    color: Theme.background
+                    border.color: Theme.primary
+                    border.width: 1
+                    radius: 8
+                }
+            }
+
+            // --- System MENU ---
+            Menu {
+                title: qsTr("System")
+                font.family: Theme.fontFamily
+                font.pixelSize: 14
+                padding:8
+                
+                enter: Transition { NumberAnimation { property: "opacity"; from: 0.0; to: 1.0; duration: 200; easing.type: Easing.OutQuad } }
+                exit: Transition { NumberAnimation { property: "opacity"; from: 1.0; to: 0.0; duration: 150; easing.type: Easing.InQuad } }
+
+                SuperSectionMenuItem { 
+                    text: qsTr("Display Manager");
+                    onClicked: { 
+                        Quickshell.execDetached(["kitty", "--class", "dotfiles-floating", "-e", Quickshell.env("HOME") + "/.config/supersection/scripts/supersection-install-sddm"]) 
+                    }
+                }
+                SuperSectionMenuItem { 
+                    text: qsTr("Network Manager Applet");
+                    onClicked: { 
+                        Quickshell.execDetached(["bash", "-c", Quickshell.env("HOME") + "/.config/supersection/scripts/supersection-toggle-nmapplet"])
+                    }
+                }
+                SuperSectionMenuItem { 
+                    text: qsTr("Change Shell");
+                    onClicked: { 
+                        Quickshell.execDetached(["kitty", "--class", "dotfiles-floating", "-e", Quickshell.env("HOME") + "/.config/supersection/scripts/supersection-change-shell"])
+                    }
+                }
+                SuperSectionMenuItem { 
+                    text: qsTr("System Info") 
+                    onClicked: { 
+                        Quickshell.execDetached(["kitty", "--class", "dotfiles-floating", "-e", Quickshell.env("HOME") + "/.config/hypr/scripts/systeminfo.sh"])
+                    }
+                }
+                SuperSectionMenuSeparator {}
+                SuperSectionMenuItem { 
+                    text: qsTr("Exit Hyprland") 
+                    onClicked: {
+                        Quickshell.execDetached(["bash", "-c", "qs ipc call power toggle"])
+                    }
+                }
+
+                background: Rectangle {
+                    implicitWidth: 220
+                    color: Theme.background
+                    border.color: Theme.primary
+                    border.width: 1
+                    radius: 8
+                }
+            }
+
+            // --- HELP MENU ---
+            Menu {
+                title: qsTr("Help")
+                font.family: Theme.fontFamily
+                font.pixelSize: 14
+                padding:8
+                
+                enter: Transition { NumberAnimation { property: "opacity"; from: 0.0; to: 1.0; duration: 200; easing.type: Easing.OutQuad } }
+                exit: Transition { NumberAnimation { property: "opacity"; from: 1.0; to: 0.0; duration: 150; easing.type: Easing.InQuad } }
+
+                SuperSectionMenuItem { text: qsTr("SuperSection OS Homepage"); onClicked: { 
+                    Quickshell.execDetached(["xdg-open", "https://supersection.com/os/"])
+                    }
+                }
+                SuperSectionMenuItem { text: qsTr("SuperSection OS GitHub"); onClicked: { 
+                    Quickshell.execDetached(["xdg-open", "https://github.com/SuperSection/dotfiles"]) 
+                    } 
+                }
+                SuperSectionMenuItem { text: qsTr("SuperSection OS Changelog"); onClicked: { 
+                    Quickshell.execDetached(["xdg-open", "https://github.com/SuperSection/dotfiles/blob/main/CHANGELOG.md"]) 
+                    } 
+                }
+                SuperSectionMenuItem { text: qsTr("SuperSection YouTube Channel"); onClicked: { 
+                    Quickshell.execDetached(["xdg-open", "https://www.youtube.com/channel/UC0sUzmZ0CHvVCVrpRfGKZfw"]) 
+                    } 
+                }
+                SuperSectionMenuItem { text: qsTr("Get more Wallpapers"); onClicked: { 
+                    Quickshell.execDetached(["xdg-open", "https://github.com/SuperSection/wallpaper"]) 
+                    } 
+                }
+                SuperSectionMenuSeparator {}
+                SuperSectionMenuItem { text: qsTr("Hyprland Homepage"); onClicked: { 
+                    Quickshell.execDetached(["xdg-open", "https://github.com/SuperSection/wallpaper"]) 
+                    } 
+                }
+                SuperSectionMenuItem { text: qsTr("Hyprland Wiki"); onClicked: { 
+                    Quickshell.execDetached(["xdg-open", "https://github.com/SuperSection/wallpaper"]) 
+                    } 
+                }
+                SuperSectionMenuItem { text: qsTr("Update SuperSection OS"); onClicked: { 
+                    Quickshell.execDetached(["xdg-open", "https://supersection.com/os/getting-started/update"]) 
+                    } 
+                }
+
+                background: Rectangle {
+                    implicitWidth: 180
+                    color: Theme.background
+                    border.color: Theme.primary
+                    radius: 8
+                }
+            }
+
+            // --- UNIVERSAL STYLING FOR ALL MENUS ---
+            delegate: MenuBarItem {
+                id: menuBarItem
+                contentItem: Text {
+                    text: menuBarItem.text
+                    font.pixelSize: 14
+                    font.family: Theme.fontFamily
+                    color: Theme.on_primary
+                    horizontalAlignment: Text.AlignLeft
+                    verticalAlignment: Text.AlignVCenter
+                }
+                background: Rectangle {
+                    color: "transparent"
+                    radius: Theme.on_primary
+                }
+            }
+        }
+
+        // ==========================================
+        // MAIN CONTENT AREA
+        // ==========================================
+        Rectangle {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            color: "transparent"
+
+            ColumnLayout {
+                anchors.fill: parent
+                anchors.margins: 10
+                spacing: 10
+
+                // --- MAIN HERO SECTION --- 
+                ColumnLayout {
+                    Layout.alignment: Qt.AlignHCenter
+                    spacing: 5
+                    Layout.topMargin: 20
+
+                    Image {
+                        Layout.alignment: Qt.AlignHCenter
+                        source: "../shared/supersection.svg"
+                        sourceSize.width: 100 
+                        sourceSize.height: 100
+                        width: 100
+                        height: 100
+                        fillMode: Image.PreserveAspectFit
+                    }
+
+                    Text {
+                        Layout.alignment: Qt.AlignHCenter
+                        text: "Welcome to SuperSection OS"
+                        font.family: Theme.fontFamily
+                        font.pixelSize: 28
+                        font.bold: true
+                        color: Theme.on_background
+                        Layout.bottomMargin: 0
+                    }
+
+                    Text {
+                        Layout.alignment: Qt.AlignHCenter
+                        text: "Version 2.12.2"
+                        font.family: Theme.fontFamily
+                        font.pixelSize: 16
+                        color: Theme.on_background
+                        Layout.bottomMargin: 10
+                    }
+
+                    // Action Buttons
+                    RowLayout {
+                        Layout.alignment: Qt.AlignHCenter
+                        spacing: 15
+
+                        Button {
+                            text: "Dotfiles Settings"
+                            onClicked: {
+                                Quickshell.execDetached(["qs", "-p", Quickshell.env("HOME") + "/.local/share/supersection-dotfiles-settings/quickshell", "ipc", "call", "settings", "toggle"])
+                            }
+                            background: Rectangle {
+                                color: "transparent"
+                                radius: 10
+                                border.color: Theme.primary
+                            }
+                            contentItem: Text {
+                                text: parent.text
+                                font.family: Theme.fontFamily
+                                color: Theme.primary
+                                padding: 8
+                            }
+                        }
+
+                        // --- VISIBILITY BOUND TO GUARD PROPERTY ---
+                        Button {
+                            text: "Hyprland Settings"
+                            visible: root.isHyprlandSettingsInstalled 
+                            
+                            onClicked: {
+                                Quickshell.execDetached(["flatpak", "run", "com.supersection.hyprlandsettings"])
+                            }
+                            background: Rectangle {
+                                color: "transparent"
+                                radius: 10
+                                border.color: Theme.primary
+                            }
+                            contentItem: Text {
+                                text: parent.text
+                                font.family: Theme.fontFamily
+                                color: Theme.primary
+                                padding: 8
+                            }
+                        }
+                    }
+                }
+
+                Item { Layout.fillHeight: true } // Spacer
+
+                // --- KEYBINDINGS GRID ---
+                ColumnLayout {
+                    Layout.alignment: Qt.AlignHCenter
+                    spacing: 8
+
+                    Repeater {
+                        model: ListModel {
+                            ListElement { keys: "Super + Enter"; desc: "to open the terminal" }
+                            ListElement { keys: "Super + B"; desc: "to open the browser" }
+                            ListElement { keys: "Super + Q"; desc: "to close the active window" }
+                            ListElement { keys: "Super + CTRL + Enter"; desc: "to open the application launcher" }
+                            ListElement { keys: "Super + CTRL + S"; desc: "to open the sidebar" }
+                            ListElement { keys: "Super + CTRL + W"; desc: "to set a wallpaper" }
+                        }
+                        
+                        delegate: RowLayout {
+                            spacing: 15
+                            
+                            Text {
+                                text: model.keys
+                                color: Theme.primary
+                                font.family: Theme.fontFamily
+                                font.bold: true
+                                font.pixelSize: 13
+                                Layout.preferredWidth: 120
+                                horizontalAlignment: Text.AlignRight
+                            }
+                            
+                            Text {
+                                text: model.desc
+                                color: Theme.on_background
+                                font.family: Theme.fontFamily
+                                font.pixelSize: 13
+                                Layout.preferredWidth: 240
+                            }
+                        }
+                    }
+
+                    Button {
+                        Layout.alignment: Qt.AlignHCenter
+                        Layout.topMargin: 15
+                        text: "All keybindings"
+
+                        onClicked: {
+                            Quickshell.execDetached(["bash", "-c", Quickshell.env("HOME") + "/.config/hypr/scripts/keybindings.sh"])
+                        }
+
+                        background: Rectangle {
+                            color: "transparent"
+                            border.color: Theme.primary
+                            radius: 10
+                        }
+                        contentItem: Text {
+                            text: parent.text
+                            font.family: Theme.fontFamily
+                            color: Theme.primary
+                            padding: 8
+                        }
+                    }
+                }
+                
+                Item { Layout.fillHeight: true } 
+
+                // ==========================================
+                // BOTTOM BAR
+                // ==========================================
+                RowLayout {
+                    Layout.fillWidth: true
+                    Layout.margins: 10
+
+                    // --- NEW TOGGLE BUTTON (Left Side) ---
+                    Button {
+                        text: "Toggle Tiling/Floating"
+                        
+                        // Styled to be slightly smaller and compact
+                        background: Rectangle {
+                            color: "transparent"
+                            border.color: Theme.primary
+                            border.width: 1
+                            radius: 6
+                        }
+                        
+                        contentItem: Text {
+                            text: parent.text
+                            font.family: Theme.fontFamily
+                            font.pixelSize: 12 // Smaller text size
+                            color: Theme.primary
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                            padding: 4
+                            leftPadding: 10
+                            rightPadding: 10
+                        }
+                        
+                        onClicked: {
+                            Quickshell.execDetached(["hyprctl", "dispatch", "togglefloating"])
+                        }
+                    }
+
+                    Item { Layout.fillWidth: true }
+
+                    Text {
+                        text: qsTr("Show on Startup")
+                        color: Theme.primary
+                        font.family: Theme.fontFamily
+                        font.pixelSize: 14
+                        Layout.alignment: Qt.AlignVCenter
+                    }
+
+                    Switch {
+                        id: autostartSwitch
+                        Layout.alignment: Qt.AlignVCenter
+                        
+                        implicitWidth: 48
+                        implicitHeight: 26
+
+                        property bool ready: false
+
+                        Process {
+                            command: ["bash", "-c", "test -f ~/.cache/supersection-welcome-autostart && echo exists || echo missing"]
+                            running: root.visible
+                            stdout: StdioCollector {
+                                onStreamFinished: {
+                                    let output = this.text.trim()
+                                    if (output === "exists") {
+                                        autostartSwitch.checked = false 
+                                    } else if (output === "missing") {
+                                        autostartSwitch.checked = true  
+                                    }
+                                    autostartSwitch.ready = true
+                                }
+                            }
+                        }
+
+                        indicator: Rectangle {
+                            implicitWidth: 48
+                            implicitHeight: 26
+                            radius: 13
+                            
+                            color: autostartSwitch.checked ? Theme.primary : Theme.background
+                            border.color: Theme.primary
+                            border.width: 1
+
+                            Rectangle {
+                                x: autostartSwitch.checked ? parent.width - width - 2 : 2
+                                y: 2
+                                width: 22
+                                height: 22 
+                                radius: 11
+                                color: autostartSwitch.checked ? Theme.background : Theme.on_primary
+                                Behavior on x { NumberAnimation { duration: 150 } }
+                            }
+                        }
+
+                        onClicked: {
+                            if (!ready) return;
+                            if (checked) {
+                                Quickshell.execDetached(["rm", "-f", Quickshell.env("HOME") + "/.cache/supersection-welcome-autostart"])
+                            } else {
+                                Quickshell.execDetached(["touch", Quickshell.env("HOME") + "/.cache/supersection-welcome-autostart"])
+                            }
+                        }
+                    }
+                }                
+            }
+        }
+    }
+}
