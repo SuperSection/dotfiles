@@ -80,6 +80,7 @@ waybar
 wf-recorder
 wget
 wl-clipboard
+wl-clip-persist
 xclip
 xdg-desktop-portal-gtk
 xdg-desktop-portal-hyprland
