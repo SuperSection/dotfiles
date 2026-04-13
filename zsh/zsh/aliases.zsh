@@ -5,11 +5,18 @@ alias ll='ls -alh'
 alias lu='ls -alu' # shows last Access time
 alias lc='ls -alc' # shows last Change time
 
+# eza commands
+alias eza='eza -a --icons=always'
+alias ezal='eza -l'
+alias ezat='eza --tree --level=1'
+
 # general commands
+alias ..='cd ..'
 alias vim='nvim'
 alias c='clear'
 alias x='exit'
 alias lg='lazygit'
+alias wifi='nmtui'
 
 # system commands
 alias poweroff='sudo systemctl poweroff'
@@ -20,9 +27,22 @@ alias reboot='sudo systemctl reboot'
 alias C='cd /mnt/windows_C'
 alias D='cd /mnt/windows_D'
 
+# config
+alias arch-cleanup='~/.config/supersection/scripts/supersection-arch-cleanup'
+alias apps='~/.config/supersection/bin/supersection-apps'
+alias screenshot='~/.config/supersection/bin/supersection-screenshot'
+alias updates='~/.config/supersection/scripts/supersection-install-system-updates'
+alias filemanager='~/.config/supersection/settings/filemanager'
+alias lock='hyprlock'
+alias clock='tty-clock'
+alias system='~/.config/supersection/settings/systemmonitor'
+alias quick='~/.config/supersection/bin/supersection-quicklinks'
+alias wallpaper='~/.config/supersection/bin/supersection-wallpaper'
+alias settings='supersection-dotfiles-settings com.supersection.dotfiles'
+
 # git commands
 alias ginit='git init'
-alias ga='git add .'
+alias ga='git add'
 alias gc='git commit -m'
 alias gcom='git add --all && git commit -m'
 alias grao='git remote add origin'
@@ -30,8 +50,11 @@ alias gs='git status -s'
 alias glog='git log'
 alias gl='git log --oneline --graph --all'
 alias gb='git branch'
-alias gchb='git checkout -b'
-alias gch='git checkout'
+alias gp="git push"
+alias gpl="git pull"
+alias gst="git stash"
+alias gcheck='git checkout'
+alias gcredential="git config credential.helper store"
 
 # tmux commands
 alias tnew='tmux new -s'

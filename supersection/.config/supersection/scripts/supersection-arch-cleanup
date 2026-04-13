@@ -1,0 +1,20 @@
+#!/bin/bash
+clear
+aur_helper="$(cat ~/.config/supersection/settings/aur.sh)"
+
+# Check helper
+if ! command -v "$aur_helper" &> /dev/null; then
+    echo "AUR helper not found"
+    exit 1
+fi
+
+# Title
+if command -v figlet &> /dev/null; then
+    figlet -f smslant "Cleanup"
+else
+    echo "=== Cleanup ==="
+fi
+echo
+
+$aur_helper -Sc
+sudo rm -rf /var/cache/pacman/pkg/download-* 2>/dev/null
