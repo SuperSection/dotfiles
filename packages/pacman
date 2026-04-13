@@ -20,6 +20,7 @@ glib2
 gnome-themes-extra
 grim
 gsettings-desktop-schemas
+gum
 gvfs
 gvfs-mtp
 htop
