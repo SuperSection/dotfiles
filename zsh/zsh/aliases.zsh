@@ -1,3 +1,16 @@
+
+
+# -----------------------------------------------------
+# General Commands
+# -----------------------------------------------------
+alias ..='cd ..'
+alias v='$EDITOR'
+alias vim='nvim'
+alias c='clear'
+alias x='exit'
+alias lg='lazygit'
+alias wifi='nmtui'
+
 # ls commands
 alias ls='ls --color -p'
 alias la='ls -a'
@@ -9,14 +22,6 @@ alias lc='ls -alc' # shows last Change time
 alias eza='eza -a --icons=always'
 alias ezal='eza -l'
 alias ezat='eza --tree --level=1'
-
-# general commands
-alias ..='cd ..'
-alias vim='nvim'
-alias c='clear'
-alias x='exit'
-alias lg='lazygit'
-alias wifi='nmtui'
 
 # system commands
 alias poweroff='sudo systemctl poweroff'
@@ -40,7 +45,20 @@ alias quick='~/.config/supersection/bin/supersection-quicklinks'
 alias wallpaper='~/.config/supersection/bin/supersection-wallpaper'
 alias settings='supersection-dotfiles-settings com.supersection.dotfiles'
 
-# git commands
+
+# -----------------------------------------------------
+# SuperSection Apps
+# -----------------------------------------------------
+alias supersection='qs ipc call welcome toggle'
+alias supersection-settings='qs -p ~/.local/share/supersection-dotfiles-settings/quickshell ipc call settings toggle'
+alias supersection-calendar='qs ipc call calendar toggle'
+alias supersection-hyprland='flatpak run com.supersection.hyprlandsettings'
+alias supersection-sidebar='qs ipc call sidebar toggle'
+
+
+# -----------------------------------------------------
+# Git Commands
+# -----------------------------------------------------
 alias ginit='git init'
 alias ga='git add'
 alias gc='git commit -m'
@@ -56,12 +74,21 @@ alias gst="git stash"
 alias gcheck='git checkout'
 alias gcredential="git config credential.helper store"
 
-# tmux commands
+# -----------------------------------------------------
+# Tmux Commands
+# -----------------------------------------------------
 alias tnew='tmux new -s'
 alias tat='tmux attach -t'
 alias td='tmux detach'
 alias tls='tmux ls'
 alias tkill='tmux kill-session -t'
+
+
+# -----------------------------------------------------
+# Scripts
+# -----------------------------------------------------
+alias ascii='~/.config/supersection/scripts/supersection-ascii-header'
+
 # calls the tmux new session script
 alias tns="~/scripts/tmux-sessionizer"
 
@@ -74,7 +101,10 @@ alias fman="compgen -c | fzf | xargs man"
 # zoxide (called from ~/scripts/)
 alias nzo="~/scripts/zoxide_openfiles_nvim.sh"
 
-# docker commands
+
+# -----------------------------------------------------
+# Docker Commands
+# -----------------------------------------------------
 alias dstop='docker stop $(docker ps -aq)'
 alias drm='docker rm $(docker ps -aq)'
 alias drmi='docker rmi $(docker images -q)'
@@ -93,3 +123,12 @@ keycodes() {
 
 # Miscellaneous
 alias bright='brightnessctl'
+
+
+# -----------------------------------------------------
+# System
+# -----------------------------------------------------
+update-grub() {
+  echo "Updating GRUB config..."
+  sudo grub-mkconfig -o /boot/grub/grub.cfg
+}

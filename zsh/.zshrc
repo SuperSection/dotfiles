@@ -1,3 +1,10 @@
+#            _
+#    _______| |__  _ __ ___
+#   |_  / __| '_ \| '__/ __|
+#  _ / /\__ \ | | | | | (__
+# (_)___|___/_| |_|_|  \___|
+#
+# -----------------------------------------------------
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -37,6 +44,11 @@ fi
 # Source exports
 if [ -f ~/zsh/exports.zsh ]; then
   source ~/zsh/exports.zsh
+fi
+
+# Source autostart
+if [ -f ~/zsh/autostart.zsh ]; then
+  source ~/zsh/autostart.zsh
 fi
 
 
@@ -122,7 +134,7 @@ source ~/scripts/fzf-git.sh
 # eval "$(ssh-agent -s)"
 # ssh-add ~/.ssh/soumosarkar297
 # ssh-add ~/.ssh/id_ed25519
-eval $(keychain --quiet --eval ~/.ssh/gitlab)
+# eval $(keychain --quiet --eval ~/.ssh/gitlab)
 
 
 # Opens Yazi AND preserves directory changes
