@@ -5,7 +5,7 @@
 # The 'ff' command (Fuzzy Finder)
 finder() {
     # Run the script and capture the result
-    local result=$($HOME/.config/supersection/bin/ml4w-finder)
+    local result=$($HOME/.config/supersection/bin/supersection-finder)
 
     # Check if the script told us to CD
     if [[ "$result" == TYPE_DIR:* ]]; then
@@ -24,8 +24,8 @@ finder() {
 # -----------------------------------------------------
 # Fastfetch
 # -----------------------------------------------------
-if [[ $(tty) == *"pts"* ]]; then
-    if [ ! -f $HOME/.config/ml4w/settings/hide-fastfetch ]; then
+if [[ $(tty) == *pts* ]]; then
+    if [ ! -f $HOME/.config/supersection/settings/hide-fastfetch ]; then
         fastfetch
     fi
 fi
