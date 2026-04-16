@@ -68,7 +68,10 @@ y = 5
 
 [cursor.style]
 shape = "Block"
-blinking = "Off"
+blinking = "On"
+
+[cursor]
+blink_timeout = 0
 
 [selection]
 save_to_clipboard = false
