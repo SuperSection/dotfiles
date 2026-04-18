@@ -51,6 +51,10 @@ if [ -f ~/zsh/autostart.zsh ]; then
   source ~/zsh/autostart.zsh
 fi
 
+if [ -f ~/zsh/man.zsh ]; then
+  source ~/zsh/man.zsh
+fi
+
 
 # Add in Powerlevel10k
 zinit ice depth=1; zinit light romkatv/powerlevel10k
