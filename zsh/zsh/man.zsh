@@ -4,6 +4,8 @@ export MANPAGER="less -R"
 # Better LESS defaults
 export LESS='-R --mouse --wheel-lines=3'
 
+export GROFF_NO_SGR=1   # For Konsole and Gnome-terminal
+
 # ---- COLORS ----
 
 # Bold (section headers like NAME, SYNOPSIS)
@@ -14,7 +16,7 @@ export LESS_TERMCAP_mb=$'\e[1;38;5;203m'
 export LESS_TERMCAP_me=$'\e[0m'
 
 # Underline (commands, arguments)
-export LESS_TERMCAP_us=$'\e[4;1;32m'   # soft green
+export LESS_TERMCAP_us=$'\e[4;1;32m'   # green + underline
 export LESS_TERMCAP_ue=$'\e[0m'
 
 # Standout (search highlight)
@@ -33,5 +35,5 @@ export LESS_TERMCAP_ZV=$'\e[75m'
 export LESS_TERMCAP_ZO=$'\e[73m'
 export LESS_TERMCAP_ZW=$'\e[75m'
 
-# For all using Arch try export MANROFFOPT='-c' this activates Overstrike for me
+# For all using Arch try export MANROFFOPT='-c' this activates Overstrike
 export MANROFFOPT='-c'
