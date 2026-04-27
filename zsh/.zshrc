@@ -80,10 +80,6 @@ autoload -Uz compinit && compinit
 zinit cdreplay -q
 
 
-if ! pgrep -x "tmux" >/dev/null; then
-  tmux start-server
-fi
-
 
 # Keybindings
 bindkey -e
